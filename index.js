@@ -55,6 +55,40 @@ server.post('/api/posts', async (req, res) => {
     }
 });
 
+server.delete('/api/posts/:id', async (req, res) => {
+    try {
+        const count = await DB.remove(req.params.id);
+        if (count > 0) {
+            res.status(200).json({ message: 'The post has been nuked' });
+        } else {
+            res.status(404).json({ message: 'The post could not be found' });
+        }
+    } catch (error) {
+      // log error to database
+        console.log(error);
+        res.status(500).json({
+        message: 'Error removing the hub',
+        });
+    }
+});
+
+server.put('/api/posts/:id', async (req, res) => {
+    try {
+      const post = await DB.update(req.params.id, req.body);
+      if (post) {
+        res.status(200).json(post);
+      } else {
+        res.status(404).json({ message: 'The hub could not be found' });
+      }
+    } catch (error) {
+      // log error to database
+      console.log(error);
+      res.status(500).json({
+        message: 'Error updating the hub',
+      });
+    }
+  });
+
 server.listen(5000, () => {
     console.log('\n*** Server Running on http://localhost:4000 ***\n');
   });
