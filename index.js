@@ -26,21 +26,34 @@ server.get('/api/posts', async (req, res) => {
 
 server.get('/api/posts/:id', async (req, res) => {
     try {
-      const post = await DB.findById(req.params.id);
-  
-      if (post) {
+        const post = await DB.findById(req.params.id);
+
+        if (post) {
         res.status(200).json(post);
-      } else {
+        } else {
         res.status(404).json({ message: 'Post not found' });
-      }
+        }
     } catch (error) {
-      // log error to database
-      console.log(error);
-      res.status(500).json({
-        message: 'Error retrieving the hub',
-      });
+        // log error to database
+        console.log(error);
+        res.status(500).json({
+        message: 'Error retrieving the post',
+        });
     }
-  });
+});
+
+server.post('/api/posts', async (req, res) => {
+    try {
+        const post = await DB.insert(req.body);
+        res.status(201).json(post);
+    } catch (error) {
+        // log error to database
+        console.log(error);
+        res.status(500).json({
+        message: 'Error adding the post',
+        });
+    }
+});
 
 server.listen(5000, () => {
     console.log('\n*** Server Running on http://localhost:4000 ***\n');
