@@ -1,9 +1,23 @@
+
+
+
 const express = require('express');
 
-const Posts = require('../data/db');
+const filePath = 'db'
+const Posts = require('../data/' + filePath);
 
 const router = express.Router();
-
+// GET /api/posts/123/messages
+router.get('/:id/messages', (req, res) => {
+    Posts.findHubMessages(req.params.id)
+      .then(messages => {
+        res.status(200).json(messages);
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
+  });
+  
 // urls begin with /api/posts
 router.get('/', async (req, res) => {
   try {
@@ -83,16 +97,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// GET /api/posts/123/messages
-router.get('/:id/messages', (req, res) => {
-  Posts.findHubMessages(req.params.id)
-    .then(messages => {
-      res.status(200).json(messages);
-    })
-    .catch(err => {
-      res.status(500).json(err);
-    });
-});
 
 // add an endpoint that returns all the messages for a post
 // add an endpoint for adding new message to a post
